@@ -3,11 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <title>Playable Ads</title>
-  <link rel="stylesheet" href="css/main.css">
+  <style>
+    @font-face{
+      font-family: 'FrizQuadrataC';
+      src: url('/fonts/FrizQuadrataC.otf');
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+  </style>
 </head>
 <body>
-<canvas id="game-window">
+<canvas id="game-window" width="1920"  height="1080">
 </canvas>
-<script src="js/main.js"></script>
+<script>
+  const cvs = document.getElementById('game-window');
+  const ctx = cvs.getContext('2d');
+  let requestAnimation;
+  const bg = new Image();
+  const tutorial = new Image();
+  const apple = new Image();
+  bg.src = 'img/bg_ho.png';
+  tutorial.src = "img/tutorial.png";
+  apple.src = 'img/apple.png';
+
+  let size = 30.1;
+  let count = 0;
+  let state = false;
+
+  function draw() {
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.drawImage(bg, 0, 0);
+    ctx.drawImage(tutorial, cvs.width / 2 - 300, 50, 600, 200);
+    ctx.drawImage(apple, 1150, 550, 40, 40);
+    ctx.fillStyle = '#460000';
+    ctx.font = `bold ${size}px FrizQuadrataC`;
+
+
+
+    if (size.toFixed(2) == 30.05 && state === false) {
+      state = true;
+    } else if (size.toFixed(2) == 35.05 && state === true) {
+      state = false;
+    }
+
+    if (state === true) {
+      count -= 0.15;
+      ctx.fillText('Find all the'.toUpperCase(), cvs.width / 2 - 115 + count, 160 + count / 10);
+      ctx.fillText('hidden objects!'.toUpperCase(), cvs.width / 2 - 135 + count, 195 - count / 10);
+      size += 0.05;
+
+    } else {
+      count += 0.15;
+      ctx.fillText('Find all the'.toUpperCase(), cvs.width / 2 - 115 + count, 160 + count / 10);
+      ctx.fillText('hidden objects!'.toUpperCase(), cvs.width / 2 - 135 + count, 195 - count / 10);
+      size -= 0.05;
+
+    }
+
+    requestAnimation = requestAnimationFrame(draw);
+  }
+
+  apple.onload = requestAnimationFrame(draw);
+
+</script>
 </body>
 </html>
