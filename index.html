@@ -24,30 +24,41 @@
   let requestAnimation;
   const bg = new Image();
   const tutorial = new Image();
+  const gui = new Image();
   const apple = new Image();
   bg.src = 'img/bg_ho.png';
   tutorial.src = "img/tutorial.png";
   apple.src = 'img/apple.png';
+  gui.src = 'img/ho_gui.png';
 
 
   tutorialObj = {
-    x : cvs.width / 2 -300,
-    y : 50,
+    x : cvs.width / 2 - 300,
+    y : 35,
     w : 600,
-    h : 200,
+    h : 250,
     textX : cvs.width / 2 - 150,
-    textY : 160,
+    textY : 170,
     line1 : 'Find all the'.toUpperCase(),
     line2 : 'hidden objects!'.toUpperCase(),
     size : 0,
     state : false,
+    drawLine1 : () => {
+      ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
+    },
+    drawLine2 : () => {
+      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 35 + tutorialObj.size / 2);
+    }
   };
+
 
   function draw() {
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
-    ctx.drawImage(tutorial, cvs.width / 2 - 300, 50, 600, 200);
+    ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
     ctx.drawImage(apple, 1150, 550, 40, 40);
+    ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+
     (function drawTutorial() {
       ctx.fillStyle = '#460000';
       ctx.font = `bold ${40 + tutorialObj.size}px FrizQuadrataC`;
@@ -59,13 +70,13 @@
       }
 
       if (tutorialObj.state === true) {
-        ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
-        ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 35 + tutorialObj.size / 2);
+        tutorialObj.drawLine1();
+        tutorialObj.drawLine2();
         tutorialObj.size += 0.05;
         tutorialObj.textX -= tutorialObj.size / 14;
       } else {
-        ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
-        ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 35 + tutorialObj.size / 2);
+        tutorialObj.drawLine1();
+        tutorialObj.drawLine2();
         tutorialObj.size -= 0.05;
         tutorialObj.textX += tutorialObj.size / 14;
         }
