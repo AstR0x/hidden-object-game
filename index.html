@@ -6,7 +6,7 @@
   <style>
     @font-face{
       font-family: 'FrizQuadrataC';
-      src: url('/fonts/FrizQuadrataC.otf');
+      src: url('./fonts/FrizQuadrataC.otf');
     }
 
     * {
@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-<canvas id="game-window" width="1920"  height="1080">
+<canvas id="game-window" width="1920"  height="1000">
 </canvas>
 <script>
   const cvs = document.getElementById('game-window');
@@ -25,11 +25,18 @@
   const bg = new Image();
   const tutorial = new Image();
   const gui = new Image();
+  const glassBird = new Image();
+  const playingCard = new Image();
+  const purse = new Image();
   const apple = new Image();
   bg.src = 'img/bg_ho.png';
-  tutorial.src = "img/tutorial.png";
+  tutorial.src = 'img/tutorial.png';
+  glassBird.src = 'img/glass_bird.png';
+  playingCard.src = 'img/playing_card.png';
+  purse.src = 'img/purse.png';
   apple.src = 'img/apple.png';
   gui.src = 'img/ho_gui.png';
+
 
 
   tutorialObj = {
@@ -37,27 +44,69 @@
     y : 35,
     w : 600,
     h : 250,
-    textX : cvs.width / 2 - 150,
+    textX : cvs.width / 2 - 130,
     textY : 170,
     line1 : 'Find all the'.toUpperCase(),
     line2 : 'hidden objects!'.toUpperCase(),
     size : 0,
     state : false,
-    drawLine1 : () => {
+    drawText : () => {
       ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
+      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 40 + tutorialObj.size / 2);
     },
-    drawLine2 : () => {
-      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 35 + tutorialObj.size / 2);
-    }
   };
 
+  let appleObj = {
+    x : 1150,
+    y : 550,
+    w : 40,
+    h : 40,
+  };
+
+  let glassBirdObj = {
+    x : cvs.width / 4 + 20,
+    y : cvs.height / 4 -2,
+    w : 100,
+    h : 100,
+  };
+
+  let playingCardObj = {
+    x : cvs.width - 350,
+    y : cvs.height / 2 + 100,
+    w : 70,
+    h : 100,
+  };
+
+  let purseObj = {
+    x : cvs.width / 4 + 50,
+    y : cvs.height / 2 + 130,
+    w : 120,
+    h : 90,
+  };
+
+  let arr = [[glassBird, glassBirdObj], [playingCard, playingCardObj], [purse, purseObj], [apple, appleObj]];
+
+  cvs.addEventListener('click', function(event) {
+    let rect = cvs.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    if (1150 <= x && x <= 1190 && 550 <= y && y <= 590) {
+      ctx.clearRect(1150, 550, 1190, 590);
+    }
+    
+  }, false);
+  
 
   function draw() {
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
     ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
-    ctx.drawImage(apple, 1150, 550, 40, 40);
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+
+    ctx.drawImage(apple, appleObj.x, appleObj.y, appleObj.w, appleObj.h);
+    ctx.drawImage(glassBird, glassBirdObj.x, glassBirdObj.y, glassBirdObj.w, glassBirdObj.h);
+    ctx.drawImage(purse, purseObj.x, purseObj.y, purseObj.w, purseObj.h);
+    ctx.drawImage(playingCard, playingCardObj.x, playingCardObj.y, playingCardObj.w, playingCardObj.h);
 
     (function drawTutorial() {
       ctx.fillStyle = '#460000';
@@ -70,22 +119,18 @@
       }
 
       if (tutorialObj.state === true) {
-        tutorialObj.drawLine1();
-        tutorialObj.drawLine2();
+        tutorialObj.drawText();
         tutorialObj.size += 0.05;
-        tutorialObj.textX -= tutorialObj.size / 14;
+        tutorialObj.textX -= tutorialObj.size / 15;
       } else {
-        tutorialObj.drawLine1();
-        tutorialObj.drawLine2();
+        tutorialObj.drawText();
         tutorialObj.size -= 0.05;
-        tutorialObj.textX += tutorialObj.size / 14;
+        tutorialObj.textX += tutorialObj.size / 15;
         }
     })();
     requestAnimation = requestAnimationFrame(draw);
   }
-
   apple.onload = requestAnimationFrame(draw);
-
 </script>
 </body>
 </html>
