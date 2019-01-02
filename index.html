@@ -21,9 +21,10 @@
   </style>
 </head>
 <body>
-<canvas id="game-window" width="1920"  height="1000">
+<canvas id="game-window" width="1920"  height="1005">
 </canvas>
 <script>
+
   const cvs = document.getElementById('game-window');
   const ctx = cvs.getContext('2d');
   let requestAnimation;
@@ -34,6 +35,7 @@
   const playingCard = new Image();
   const purse = new Image();
   const apple = new Image();
+
   bg.src = 'img/bg_ho.png';
   tutorial.src = 'img/tutorial.png';
   glassBird.src = 'img/glass_bird.png';
@@ -42,12 +44,13 @@
   apple.src = 'img/apple.png';
   gui.src = 'img/ho_gui.png';
 
+  //Данные объектов
   tutorialObj = {
     x : cvs.width / 2 - 300,
     y : 35,
     w : 600,
     h : 250,
-    textX : cvs.width / 2 - 130,
+    textX : cvs.width / 2 - 120,
     textY : 170,
     line1 : 'Find all the'.toUpperCase(),
     line2 : 'hidden objects!'.toUpperCase(),
@@ -55,7 +58,7 @@
     state : false,
     drawText : () => {
       ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
-      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 30, tutorialObj.textY + 40 + tutorialObj.size / 2);
+      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 40, tutorialObj.textY + 40 + tutorialObj.size / 2);
     },
   };
 
@@ -69,6 +72,7 @@
     textX : 500,
     textY : 940,
     globalA : 1,
+    backlight : false,
   };
 
   let purseObj = {
@@ -81,6 +85,7 @@
     textX : 830,
     textY : 940,
     globalA : 1,
+    backlight : false,
   };
 
   let glassBirdObj = {
@@ -93,6 +98,7 @@
     textX : 1050,
     textY : 940,
     globalA : 1,
+    backlight : false,
   };
 
   let appleObj = {
@@ -105,16 +111,25 @@
     textX : 1350,
     textY : 940,
     globalA : 1,
+    backlight : false,
   };
+
+
+  let sts = true;
 
   let arr = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
 
+  //Начальное время
+  let time = performance.now();
+
+  //Обработка объектов
   cvs.addEventListener('click', function(event) {
     let rect = cvs.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
     arr.forEach((elem, i) => {
       if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
+        time = performance.now();
        let int = setInterval(function() {
           if (elem[1].globalA > 0.1) {
             elem[1].w++;
@@ -124,30 +139,68 @@
           }
           else {
             delete arr[i];
+            arr = arr.filter((elem) => {
+              return elem;
+            });
             clearInterval(int);
+            sts = false;
           }
-        }, 50)
+        }, 50);
       }
     });
     console.log(x, y);
   }, false);
 
+  //Главная функция отрисовки
   function draw() {
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
     ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
-
     arr.forEach((elem) => {
       ctx.globalAlpha = elem[1].globalA;
-      console.log(elem[1].globalA);
+      if (performance.now() - time >= 5 * 1000 && arr[0][1].backlight === false) {
+        arr[0][1].backlight = true;
+        let count = 0;
+        let state = false;
+        let inter = setInterval(() => {
+          if(count == 0 && state === false) {
+            state = true;
+          } else if (count == 30 && state === true) {
+            state = false;
+          }
+
+          if (state) {
+            arr[0][1].w += 0.5;
+            arr[0][1].h += 0.5;
+            count++
+          } else {
+            arr[0][1].w -= 0.5;
+            arr[0][1].h -= 0.5;
+            count--;
+          }
+
+          cvs.addEventListener('click', function(event) {
+            let rect = cvs.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
+            arr.forEach((elem, i) => {
+              if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
+                clearInterval(inter);
+              }
+            });
+          });
+        }, 50);
+      }
       ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
       ctx.font = `${elem[1].size}px AlbertusMedium`;
       ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
     });
 
+    //Отрисовка tutorial
     (function drawTutorial() {
+      ctx.globalAlpha = 1;
       ctx.fillStyle = '#460000';
       ctx.font = `bold ${40 + tutorialObj.size}px FrizQuadrataC`;
 
@@ -168,7 +221,7 @@
     })();
     requestAnimation = requestAnimationFrame(draw);
   }
-  apple.onload = requestAnimationFrame(draw);
+  gui.onload = requestAnimationFrame(draw);
 </script>
 </body>
 </html>
