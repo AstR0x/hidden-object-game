@@ -90,10 +90,11 @@
     let rect = cvs.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
-    if (1150 <= x && x <= 1190 && 550 <= y && y <= 590) {
-      ctx.clearRect(1150, 550, 1190, 590);
-    }
-    
+    arr.forEach((elem, i) => {
+      if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
+        delete arr[i];
+      }
+    });
   }, false);
   
 
@@ -102,11 +103,9 @@
     ctx.drawImage(bg, 0, 0);
     ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
-
-    ctx.drawImage(apple, appleObj.x, appleObj.y, appleObj.w, appleObj.h);
-    ctx.drawImage(glassBird, glassBirdObj.x, glassBirdObj.y, glassBirdObj.w, glassBirdObj.h);
-    ctx.drawImage(purse, purseObj.x, purseObj.y, purseObj.w, purseObj.h);
-    ctx.drawImage(playingCard, playingCardObj.x, playingCardObj.y, playingCardObj.w, playingCardObj.h);
+    arr.forEach((elem) => {
+      ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
+    });
 
     (function drawTutorial() {
       ctx.fillStyle = '#460000';
