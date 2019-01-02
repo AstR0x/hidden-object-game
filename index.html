@@ -9,6 +9,11 @@
       src: url('./fonts/FrizQuadrataC.otf');
     }
 
+    @font-face {
+      font-family: 'AlbertusMedium';
+      src: url('./fonts/AlbertusMedium.ttf');
+    }
+
     * {
       padding: 0;
       margin: 0;
@@ -37,8 +42,6 @@
   apple.src = 'img/apple.png';
   gui.src = 'img/ho_gui.png';
 
-
-
   tutorialObj = {
     x : cvs.width / 2 - 300,
     y : 35,
@@ -56,25 +59,16 @@
     },
   };
 
-  let appleObj = {
-    x : 1150,
-    y : 550,
-    w : 40,
-    h : 40,
-  };
-
-  let glassBirdObj = {
-    x : cvs.width / 4 + 20,
-    y : cvs.height / 4 -2,
-    w : 100,
-    h : 100,
-  };
-
   let playingCardObj = {
     x : cvs.width - 350,
     y : cvs.height / 2 + 100,
     w : 70,
     h : 100,
+    size : 30,
+    text : 'Playing card',
+    textX : 500,
+    textY : 940,
+    globalA : 1,
   };
 
   let purseObj = {
@@ -82,9 +76,38 @@
     y : cvs.height / 2 + 130,
     w : 120,
     h : 90,
+    size : 30,
+    text : 'Purse',
+    textX : 830,
+    textY : 940,
+    globalA : 1,
   };
 
-  let arr = [[glassBird, glassBirdObj], [playingCard, playingCardObj], [purse, purseObj], [apple, appleObj]];
+  let glassBirdObj = {
+    x : cvs.width / 4 + 20,
+    y : cvs.height / 4 -2,
+    w : 100,
+    h : 100,
+    size : 30,
+    text : 'Glass Bird',
+    textX : 1050,
+    textY : 940,
+    globalA : 1,
+  };
+
+  let appleObj = {
+    x : 1150,
+    y : 550,
+    w : 40,
+    h : 40,
+    size : 30,
+    text : 'Apple',
+    textX : 1350,
+    textY : 940,
+    globalA : 1,
+  };
+
+  let arr = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
 
   cvs.addEventListener('click', function(event) {
     let rect = cvs.getBoundingClientRect();
@@ -92,19 +115,36 @@
     let y = event.clientY - rect.top;
     arr.forEach((elem, i) => {
       if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
-        delete arr[i];
+       let int = setInterval(function() {
+          if (elem[1].globalA > 0.1) {
+            elem[1].w++;
+            elem[1].h += 1 * elem[1].h / elem[1].h;
+            elem[1].globalA -= 0.1;
+            elem[1].size -= elem[1].globalA / elem[1].size;
+          }
+          else {
+            delete arr[i];
+            clearInterval(int);
+          }
+        }, 50)
       }
     });
+    console.log(x, y);
   }, false);
-  
 
   function draw() {
+    ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
     ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+
     arr.forEach((elem) => {
+      ctx.globalAlpha = elem[1].globalA;
+      console.log(elem[1].globalA);
       ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
+      ctx.font = `${elem[1].size}px AlbertusMedium`;
+      ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
     });
 
     (function drawTutorial() {
@@ -116,7 +156,6 @@
       } else if (tutorialObj.size.toFixed(2) == 5 && tutorialObj.state === true) {
         tutorialObj.state = false;
       }
-
       if (tutorialObj.state === true) {
         tutorialObj.drawText();
         tutorialObj.size += 0.05;
