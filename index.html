@@ -31,6 +31,8 @@
   const bg = new Image();
   const tutorial = new Image();
   const gui = new Image();
+  const logo = new Image();
+  const button = new Image();
   const glassBird = new Image();
   const playingCard = new Image();
   const purse = new Image();
@@ -43,10 +45,12 @@
   purse.src = 'img/purse.png';
   apple.src = 'img/apple.png';
   gui.src = 'img/ho_gui.png';
+  logo.src = 'img/logo.png';
+  button.src = 'img/button.png';
 
   //Данные объектов
   tutorialObj = {
-    x : cvs.width / 2 - 300,
+    x : cvs.width / 2 - 295,
     y : 35,
     w : 600,
     h : 250,
@@ -60,6 +64,21 @@
       ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
       ctx.fillText(tutorialObj.line2, tutorialObj.textX - 40, tutorialObj.textY + 40 + tutorialObj.size / 2);
     },
+  };
+
+  let buttonObj = {
+    x : cvs.width / 2 - 400 / 2,
+    y : 400,
+    w : 400,
+    h : 100,
+    text: 'Play Free',
+  };
+
+  let logoObj = {
+    x : cvs.width / 2 - 800 / 2,
+    y : 0,
+    w : 800,
+    h : 400,
   };
 
   let playingCardObj = {
@@ -114,9 +133,6 @@
     backlight : false,
   };
 
-
-  let sts = true;
-
   let arr = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
 
   //Начальное время
@@ -143,12 +159,10 @@
               return elem;
             });
             clearInterval(int);
-            sts = false;
           }
         }, 50);
       }
     });
-    console.log(x, y);
   }, false);
 
   //Главная функция отрисовки
@@ -156,14 +170,20 @@
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
-    ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
+
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+
+    //Отрисовка объектов
     arr.forEach((elem) => {
       ctx.globalAlpha = elem[1].globalA;
+
+      //Проверка на время
       if (performance.now() - time >= 5 * 1000 && arr[0][1].backlight === false) {
         arr[0][1].backlight = true;
         let count = 0;
         let state = false;
+
+        //Запуск анимации для первого объекта в списке
         let inter = setInterval(() => {
           if(count == 0 && state === false) {
             state = true;
@@ -181,6 +201,7 @@
             count--;
           }
 
+          //Отключение анимации при клике на объект
           cvs.addEventListener('click', function(event) {
             let rect = cvs.getBoundingClientRect();
             let x = event.clientX - rect.left;
@@ -199,26 +220,35 @@
     });
 
     //Отрисовка tutorial
-    (function drawTutorial() {
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = '#460000';
-      ctx.font = `bold ${40 + tutorialObj.size}px FrizQuadrataC`;
+    if (arr.length !== 0) {
+      ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
+      (function drawTutorial() {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#460000';
+        ctx.font = `bold ${40 + tutorialObj.size}px FrizQuadrataC`;
 
-      if (tutorialObj.size.toFixed(2) == 0 && tutorialObj.state === false) {
-        tutorialObj.state = true;
-      } else if (tutorialObj.size.toFixed(2) == 5 && tutorialObj.state === true) {
-        tutorialObj.state = false;
-      }
-      if (tutorialObj.state === true) {
-        tutorialObj.drawText();
-        tutorialObj.size += 0.05;
-        tutorialObj.textX -= tutorialObj.size / 15;
-      } else {
-        tutorialObj.drawText();
-        tutorialObj.size -= 0.05;
-        tutorialObj.textX += tutorialObj.size / 15;
+        if (tutorialObj.size.toFixed(2) == 0 && tutorialObj.state === false) {
+          tutorialObj.state = true;
+        } else if (tutorialObj.size.toFixed(2) == 5 && tutorialObj.state === true) {
+          tutorialObj.state = false;
         }
-    })();
+        if (tutorialObj.state === true) {
+          tutorialObj.drawText();
+          tutorialObj.size += 0.05;
+          tutorialObj.textX -= tutorialObj.size / 15;
+        } else {
+          tutorialObj.drawText();
+          tutorialObj.size -= 0.05;
+          tutorialObj.textX += tutorialObj.size / 15;
+        }
+      })();
+    }
+    else {
+      ctx.drawImage(logo, logoObj.x, logoObj.y, logoObj.w, logoObj.h);
+      ctx.drawImage(button, buttonObj.x, buttonObj.y, buttonObj.w, buttonObj.h);
+      //ctx.fillstyle = '#ffffff';
+      ctx.fillText(buttonObj.text, buttonObj.x + 120, buttonObj.y + 60);
+    }
     requestAnimation = requestAnimationFrame(draw);
   }
   gui.onload = requestAnimationFrame(draw);
