@@ -56,7 +56,6 @@
   parfume.src = 'img/parfume.png';
   comb.src = 'img/comb.png';
 
-
   //Данные объектов
   tutorialObj = {
     x : cvs.width / 2 - 295,
@@ -90,119 +89,40 @@
     h : 400,
   };
 
-  let playingCardObj = {
-    x : cvs.width - 350,
-    y : cvs.height / 2 + 100,
-    w : 70,
-    h : 100,
-    size : 30,
-    text : 'Playing card',
-    textX : 500,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
+  class imageObj {
+    constructor(x, y, w, h, text, textX, textY) {
+      this.x = x;
+      this.y = y;
+      this.w = w;
+      this.h = h;
+      this.text = text;
+      this.textX = textX;
+      this.textY = textY;
+      this.globalA = 1;
+      this.backlight = false;
+    }
+  }
 
-  let purseObj = {
-    x : cvs.width / 4 + 50,
-    y : cvs.height / 2 + 130,
-    w : 120,
-    h : 90,
-    size : 30,
-    text : 'Purse',
-    textX : 830,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
+  //first set
+  let playingCardObj = new imageObj(cvs.width - 350, cvs.height / 2 + 100, 70, 100, 'Playing card', 500, 940);
+  let purseObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 130, 120, 90, 'Purse', 830, 940);
+  let glassBirdObj = new imageObj(cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 940);
+  let appleObj = new imageObj(1150, 550, 40, 40, 'Apple', 1350, 940);
 
-  let glassBirdObj = {
-    x : cvs.width / 4 + 20,
-    y : cvs.height / 4 -2,
-    w : 100,
-    h : 100,
-    size : 30,
-    text : 'Glass Bird',
-    textX : 1050,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
-
-  let appleObj = {
-    x : 1150,
-    y : 550,
-    w : 40,
-    h : 40,
-    size : 30,
-    text : 'Apple',
-    textX : 1350,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
-
-  let mirrorObj = {
-    x : 350,
-    y : 350,
-    w : 120,
-    h : 150,
-    size : 30,
-    text : 'Mirror',
-    textX : 500,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
-
-  let balerinaObj = {
-    x : 1010,
-    y : 430,
-    w : 100,
-    h : 200,
-    ize : 30,
-    text : 'Ballet Dancer',
-    textX : 830,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
-
-  let parfumeObj = {
-    x : cvs.width / 4 + 50,
-    y : cvs.height / 2 + 130,
-    w : 90,
-    h : 70,
-    size : 30,
-    text : 'Parfume',
-    textX : 1050,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
-
-  let combObj = {
-    x : cvs.width - 230,
-    y : cvs.height / 2 + 10,
-    w : 50,
-    h : 80,
-    size : 30,
-    text : 'Comb',
-    textX : 1350,
-    textY : 940,
-    globalA : 1,
-    backlight : false,
-  };
+  //second set
+  let mirrorObj = new imageObj(350, 350, 120, 150, 'Mirror', 500, 940);
+  let balerinaObj = new imageObj(1010, 430, 100, 200, 'Ballet Dancer', 750, 940);
+  let parfumeObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 130, 90, 70, 'Parfume', 1090, 940);
+  let combObj = new imageObj(cvs.width - 230,cvs.height / 2 + 10, 50, 80, 'Comb', 1350, 940);
 
   const randomNum = Math.round(Math.random());
 
   let objArr1 = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
   let objArr2 = [[mirror, mirrorObj], [balerina, balerinaObj], [parfume, parfumeObj], [comb, combObj]];
-  let arrr = [objArr1, objArr2];
-  
-  console.log(randomNum);
-  let arr = arrr[randomNum];
-  console.log(arr);
+
+  let arr = [objArr1, objArr2][randomNum];
+
+  // let arr = arrr[randomNum];
 
 
   //Начальное время
@@ -221,7 +141,6 @@
             elem[1].w++;
             elem[1].h += 1 * elem[1].h / elem[1].h;
             elem[1].globalA -= 0.1;
-            elem[1].size -= elem[1].globalA / elem[1].size;
           }
           else {
             delete arr[i];
@@ -284,7 +203,7 @@
         }, 50);
       }
       ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
-      ctx.font = `${elem[1].size}px AlbertusMedium`;
+      ctx.font = `30px AlbertusMedium`;
       ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
     });
 
@@ -315,7 +234,6 @@
     else {
       ctx.drawImage(logo, logoObj.x, logoObj.y, logoObj.w, logoObj.h);
       ctx.drawImage(button, buttonObj.x, buttonObj.y, buttonObj.w, buttonObj.h);
-      //ctx.fillstyle = '#ffffff';
       ctx.fillText(buttonObj.text, buttonObj.x + 120, buttonObj.y + 60);
     }
     requestAnimation = requestAnimationFrame(draw);
