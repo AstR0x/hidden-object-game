@@ -37,6 +37,10 @@
   const playingCard = new Image();
   const purse = new Image();
   const apple = new Image();
+  const mirror = new Image();
+  const balerina = new Image();
+  const parfume = new Image();
+  const comb = new Image();
 
   bg.src = 'img/bg_ho.png';
   tutorial.src = 'img/tutorial.png';
@@ -47,6 +51,11 @@
   gui.src = 'img/ho_gui.png';
   logo.src = 'img/logo.png';
   button.src = 'img/button.png';
+  mirror.src = 'img/mirror.png';
+  balerina.src = 'img/balerina.png';
+  parfume.src = 'img/parfume.png';
+  comb.src = 'img/comb.png';
+
 
   //Данные объектов
   tutorialObj = {
@@ -133,7 +142,68 @@
     backlight : false,
   };
 
-  let arr = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
+  let mirrorObj = {
+    x : 350,
+    y : 350,
+    w : 120,
+    h : 150,
+    size : 30,
+    text : 'Mirror',
+    textX : 500,
+    textY : 940,
+    globalA : 1,
+    backlight : false,
+  };
+
+  let balerinaObj = {
+    x : 1010,
+    y : 430,
+    w : 100,
+    h : 200,
+    ize : 30,
+    text : 'Ballet Dancer',
+    textX : 830,
+    textY : 940,
+    globalA : 1,
+    backlight : false,
+  };
+
+  let parfumeObj = {
+    x : cvs.width / 4 + 50,
+    y : cvs.height / 2 + 130,
+    w : 90,
+    h : 70,
+    size : 30,
+    text : 'Parfume',
+    textX : 1050,
+    textY : 940,
+    globalA : 1,
+    backlight : false,
+  };
+
+  let combObj = {
+    x : cvs.width - 230,
+    y : cvs.height / 2 + 10,
+    w : 50,
+    h : 80,
+    size : 30,
+    text : 'Comb',
+    textX : 1350,
+    textY : 940,
+    globalA : 1,
+    backlight : false,
+  };
+
+  const randomNum = Math.round(Math.random());
+
+  let objArr1 = [[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]];
+  let objArr2 = [[mirror, mirrorObj], [balerina, balerinaObj], [parfume, parfumeObj], [comb, combObj]];
+  let arrr = [objArr1, objArr2];
+  
+  console.log(randomNum);
+  let arr = arrr[randomNum];
+  console.log(arr);
+
 
   //Начальное время
   let time = performance.now();
@@ -170,7 +240,6 @@
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.drawImage(bg, 0, 0);
-
     ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
 
     //Отрисовка объектов
