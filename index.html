@@ -90,7 +90,7 @@
   };
 
   class imageObj {
-    constructor(x, y, w, h, text, textX, textY) {
+    constructor(x, y, w, h, text, textX, textY, angle = 0) {
       this.x = x;
       this.y = y;
       this.w = w;
@@ -98,22 +98,23 @@
       this.text = text;
       this.textX = textX;
       this.textY = textY;
+      this.angle = angle;
       this.globalA = 1;
       this.backlight = false;
     }
   }
 
   //first set
-  let playingCardObj = new imageObj(cvs.width - 350, cvs.height / 2 + 100, 70, 100, 'Playing card', 500, 940);
-  let purseObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 130, 120, 90, 'Purse', 830, 940);
+  let playingCardObj = new imageObj(cvs.width - 380, cvs.height / 2 + 80, 70, 100, 'Playing card', 500, 940, -45);
+  let purseObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 150, 100, 90, 'Purse', 830, 940, 10);
   let glassBirdObj = new imageObj(cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 940);
-  let appleObj = new imageObj(1150, 550, 40, 40, 'Apple', 1350, 940);
+  let appleObj = new imageObj(1150, 550, 70, 70, 'Apple', 1350, 940);
 
   //second set
-  let mirrorObj = new imageObj(350, 350, 120, 150, 'Mirror', 500, 940);
+  let mirrorObj = new imageObj(350, 350, 100, 150, 'Mirror', 500, 940);
   let balerinaObj = new imageObj(1010, 430, 100, 200, 'Ballet Dancer', 750, 940);
-  let parfumeObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 130, 90, 70, 'Parfume', 1090, 940);
-  let combObj = new imageObj(cvs.width - 230,cvs.height / 2 + 10, 50, 80, 'Comb', 1350, 940);
+  let parfumeObj = new imageObj(cvs.width / 4 + 60, cvs.height / 2 + 170, 70, 80, 'Parfume', 1090, 940, 25);
+  let combObj = new imageObj(cvs.width - 260, cvs.height / 2 + 10, 50, 80, 'Comb', 1350, 940, 25);
 
   const randomNum = Math.round(Math.random());
 
@@ -122,8 +123,9 @@
 
   let arr = [objArr1, objArr2][randomNum];
 
-  // let arr = arrr[randomNum];
-
+  function inRad(num) {
+    return num * Math.PI / 180;
+  }
 
   //Начальное время
   let time = performance.now();
@@ -202,7 +204,15 @@
           });
         }, 50);
       }
-      ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
+      if(elem[1].angle) {
+        ctx.save();
+        ctx.translate(elem[1].x + elem[1].h / 2, elem[1].y + elem[1].w / 2);
+        ctx.rotate(inRad(elem[1].angle));
+        ctx.drawImage(elem[0], -elem[1].w / 2, -elem[1].h / 2, elem[1].w, elem[1].h);
+        ctx.restore();
+      } else {
+        ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
+      }
       ctx.font = `30px AlbertusMedium`;
       ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
     });
