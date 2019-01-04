@@ -29,6 +29,8 @@
   const ctx = cvs.getContext('2d');
   let requestAnimation;
   const bg = new Image();
+  const bgCover = new Image();
+  const bgBlur = new Image();
   const tutorial = new Image();
   const gui = new Image();
   const logo = new Image();
@@ -43,6 +45,9 @@
   const comb = new Image();
 
   bg.src = 'img/bg_ho.png';
+  bgCover.src = 'img/bg_cover.png';
+  bgBlur.src = 'img/bg_blur.png';
+
   tutorial.src = 'img/tutorial.png';
   glassBird.src = 'img/glass_bird.png';
   playingCard.src = 'img/playing_card.png';
@@ -105,15 +110,15 @@
   }
 
   //first set
-  let playingCardObj = new imageObj(cvs.width - 380, cvs.height / 2 + 80, 70, 100, 'Playing card', 500, 940, -45);
+  let playingCardObj = new imageObj(cvs.width - 390, cvs.height / 2 + 60, 70, 100, 'Playing card', 500, 940, -45);
   let purseObj = new imageObj(cvs.width / 4 + 50, cvs.height / 2 + 150, 100, 90, 'Purse', 830, 940, 10);
   let glassBirdObj = new imageObj(cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 940);
   let appleObj = new imageObj(1150, 550, 70, 70, 'Apple', 1350, 940);
 
   //second set
-  let mirrorObj = new imageObj(350, 350, 100, 150, 'Mirror', 500, 940);
+  let mirrorObj = new imageObj(360, 350, 100, 150, 'Mirror', 500, 940);
   let balerinaObj = new imageObj(1010, 430, 100, 200, 'Ballet Dancer', 750, 940);
-  let parfumeObj = new imageObj(cvs.width / 4 + 60, cvs.height / 2 + 170, 70, 80, 'Parfume', 1090, 940, 25);
+  let parfumeObj = new imageObj(cvs.width / 4 + 60, cvs.height / 2 + 180, 70, 80, 'Parfume', 1090, 940, 25);
   let combObj = new imageObj(cvs.width - 260, cvs.height / 2 + 10, 50, 80, 'Comb', 1350, 940, 25);
 
   const randomNum = Math.round(Math.random());
@@ -215,6 +220,7 @@
       }
       ctx.font = `30px AlbertusMedium`;
       ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
+      ctx.drawImage(bgCover, 0, 0);
     });
 
     //Отрисовка tutorial
@@ -242,6 +248,7 @@
       })();
     }
     else {
+      ctx.drawImage(bgBlur, 0, 0);
       ctx.drawImage(logo, logoObj.x, logoObj.y, logoObj.w, logoObj.h);
       ctx.drawImage(button, buttonObj.x, buttonObj.y, buttonObj.w, buttonObj.h);
       ctx.fillText(buttonObj.text, buttonObj.x + 120, buttonObj.y + 60);
