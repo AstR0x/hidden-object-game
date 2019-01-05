@@ -21,12 +21,14 @@
   </style>
 </head>
 <body>
-<canvas id="game-window" width="1920"  height="1080">
+<canvas id="game-window">
 </canvas>
 <script>
-  const cvs = document.getElementById('game-window');
-  const ctx = cvs.getContext('2d');
-  let requestAnimation;
+   const cvs = document.getElementById('game-window');
+   const ctx = cvs.getContext('2d');
+   cvs.width = window.innerWidth;
+   cvs.height = window.innerHeight;
+   let requestAnimation;
 
   class Img {
     constructor(src, x, y, w, h) {
@@ -97,12 +99,12 @@
        }
 
        if (this.animateState) {
-         this.w += 0.5;
-         this.h += 0.5;
+         this.w += 0.4;
+         this.h += 0.4;
          this.count++
        } else {
-         this.w -= 0.5;
-         this.h -= 0.5;
+         this.w -= 0.4;
+         this.h -= 0.4;
          this.count--;
        }
      }
@@ -118,7 +120,7 @@
     animate() {
         ctx.globalAlpha = 1;
         ctx.fillStyle = '#460000';
-        ctx.font = `bold ${40 + this.size}px FrizQuadrataC`;
+        ctx.font = `bold ${cvs.width / 40 + this.size}px FrizQuadrataC`;
         if (this.size.toFixed(2) == 0 && this.animateState === false) {
           this.animateState = true;
         } else if (this.size.toFixed(2) == 5 && this.animateState === true) {
@@ -127,60 +129,69 @@
         if (this.animateState === true) {
           this.drawText();
           this.size += 0.1;
-          this.textX -= this.size / 100;
+          this.textX -= 0.3;
+          console.log(this.size / this.textX);
         } else {
           this.drawText();
           this.size -= 0.1;
-          this.textX += this.size / 100;
+          this.textX += 0.3;
         }
       }
   }
 
-  let bg = new Img('img/bg_ho.png', 0, 0);
-  let bgCover = new Img('img/bg_cover.png', 0, 0);
-  let bgBlur = new Img('img/bg_blur.png', 0, 0);
+  let bg = new Img('img/bg_ho.png', 0, 0, cvs.width, cvs.height);
+  let bgCover = new Img('img/bg_cover.png', 0, 0, cvs.width, cvs.height);
+  let bgBlur = new Img('img/bg_blur.png', 0, 0, cvs.width, cvs.height);
+  let gui = new Img('img/ho_gui.png', cvs.width / 6, cvs.height / 1.2, cvs.width / 1.5, cvs.height / 5.5);
+  let logo = new Img('img/logo.png', cvs.width / 4, cvs.height / 10, cvs.width / 2, cvs.height / 2.2);
 
-  let gui = new Img('img/ho_gui.png', cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
-  let logo = new Img('img/logo.png', cvs.width / 2 - 800 / 2, 200, 800, 400);
-    
-  const tutorial = new AnimateImg('img/tutorial.png', cvs.width / 2 - 295, 35, 600, 250, 'Find all the\nhidden objects',
-  cvs.width / 2 - 120, 170);
+  const tutorial = new AnimateImg('img/tutorial.png', cvs.width / 3, cvs.height / 25, cvs.width / 3, cvs.height / 4,
+    'Find all the\nhidden objects', cvs.width / 2.35, cvs.height / 5.7);
 
   tutorial.drawText = function() {
     ctx.fillText('Find all the'.toUpperCase(), this.textX, this.textY - this.size / 2);
-    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 40, this.textY + 40 + this.size / 2);
+    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 38, this.textY + 40 + this.size / 2);
   }
 
-
-  let button = new AnimateImg('img/button.png', cvs.width / 2 - 400 / 2, 600, 400, 100, 'Play FREE', 900, 660);
-
+  let button = new AnimateImg('img/button.png', cvs.width / 2.66, cvs.height / 1.8, cvs.width / 4, cvs.height / 10,
+    'Play FREE', cvs.width / 2.20, cvs.height / 1.62);
 
   //first set
-  let playingCardObj = new ImgOfObject('img/playing_card.png', cvs.width - 390, cvs.height / 2 + 60, 70, 100,
-    'Playing card', 500, 1020, -45);
-  let purseObj = new ImgOfObject('img/purse.png', cvs.width / 4 + 50, cvs.height / 2 + 125, 100, 90, 'Purse', 830,
-    1020, 10);
-  let glassBirdObj = new ImgOfObject('img/glass_bird.png', cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100,
-    'Glass Bird', 1050, 1020);
-  let appleObj = new ImgOfObject('img/apple.png', 1150, 554, 60, 60, 'Apple', 1350, 1020);
+  let playingCard = new ImgOfObject('img/playing_card.png', cvs.width / 1.25, cvs.height / 1.8,
+    cvs.width / 25, cvs.height / 10, 'Playing card', cvs.width / 4, cvs.height / 1.055, -45);
+  let purse = new ImgOfObject('img/purse.png', cvs.width / 3.8, cvs.height / 1.67,
+    cvs.width / 15, cvs.height / 10, 'Purse', cvs.width / 2.4, cvs.height / 1.055, 10);
+  let glassBird = new ImgOfObject('img/glass_bird.png', cvs.width / 4 , cvs.height / 4, cvs.width / 16, cvs.height / 12,
+    'Glass Bird', cvs.width / 1.9, cvs.height / 1.055);
+   let apple = new ImgOfObject('img/apple.png', cvs.width / 1.68, cvs.height / 1.96, cvs.width / 30, cvs.height / 17,
+     'Apple', cvs.width / 1.45, cvs.height / 1.055);
 
   //second set
-  let mirrorObj = new ImgOfObject('img/mirror.png', 360, 350, 100, 150, 'Mirror', 500, 1020);
-  let balerinaObj = new ImgOfObject('img/balerina.png', 1010, 425, 100, 200, 'Ballet Dancer', 750, 1020);
-  let parfumeObj = new ImgOfObject('img/parfume.png', cvs.width / 4 + 60, cvs.height / 2 + 145, 70, 80, 'Parfume', 1090, 1020, 25);
-  let combObj = new ImgOfObject('img/comb.png', cvs.width - 260, cvs.height / 2 - 40, 50, 80, 'Comb', 1350, 1020, 25);
+  let mirror = new ImgOfObject('img/mirror.png', cvs.width / 5.5, cvs.height / 3, cvs.width / 16, cvs.height / 7,
+    'Mirror',  cvs.width / 4, cvs.height / 1.055);
+  let balerina = new ImgOfObject('img/balerina.png', cvs.width / 2, cvs.height / 2.65, cvs.width / 13, cvs.height / 5,
+    'Ballet Dancer',  cvs.width / 2.7, cvs.height / 1.055);
+  let parfume = new ImgOfObject('img/parfume.png', cvs.width / 3.7, cvs.height / 1.6, cvs.width / 20, cvs.height / 13,
+    'Parfume', cvs.width/ 1.8,
+    cvs.height / 1.055, 25);
+  let comb = new ImgOfObject('img/comb.png', cvs.width / 1.15, cvs.height / 2.15, cvs.width / 30, cvs.height / 20,
+    'Comb', cvs.width / 1.45, cvs.height / 1.055, 25);
 
   //third set
-  let bookObj = new ImgOfObject('img/book.png', 1270, 600, 120, 120, 'Book', 500, 1020, -10);
-  let basketObj = new ImgOfObject('img/basket.png', 940, 500, 130, 130, 'Basket', 770, 1020);
-  let fanObj = new ImgOfObject('img/fan.png', 640, cvs.height / 2, 150, 75, 'Fan', 1090, 1020, -150);
-  let shoeObj = new ImgOfObject('img/shoe.png', 1050, 830, 100, 100, 'Shoe', 1350, 1020);
+  let book = new ImgOfObject('img/book.png', cvs.width / 1.5, cvs.height / 1.75, cvs.width / 15, cvs.height / 15,
+    'Book', cvs.width / 4, cvs.height / 1.055, -10);
+  let basket = new ImgOfObject('img/basket.png', cvs.width / 2.05, cvs.height / 2.15, cvs.width / 14, cvs.height / 9,
+    'Basket', cvs.width / 2.45, cvs.height / 1.055);
+  let fan = new ImgOfObject('img/fan.png', cvs.width / 3.2, cvs.height / 2.2, cvs.width / 10, cvs.height / 8, 'Fan',
+    cvs.width / 1.76, cvs.height / 1.055, -140);
+  let shoe = new ImgOfObject('img/shoe.png', cvs.width / 1.8, cvs.height / 1.28, cvs.width / 16, cvs.height / 12,
+    'Shoe', cvs.width / 1.45, cvs.height / 1.055);
 
   const randomNum = Math.round(Math.random() * 2);
 
-  let arrOfArrays = [[playingCardObj, purseObj, glassBirdObj, appleObj],
-     [mirrorObj, balerinaObj, parfumeObj, combObj], [bookObj,
-       basketObj, fanObj, shoeObj]];
+   let arrOfArrays = [[playingCard, purse, glassBird, apple], [book, basket, fan, shoe],
+     [mirror, balerina, parfume, comb]];
+
 
   let arrOfObjects = arrOfArrays[randomNum];
 
@@ -265,14 +276,14 @@
     }
     else {
       bgBlur.slowDraw();
-      logo.drawImg();
-      button.drawImg();
+      logo.slowDraw();
+      button.slowDraw();
       button.drawText();
       setInterval(button.animate(), 50);
     }
     requestAnimation = requestAnimationFrame(draw);
   }
-  gui.onload = requestAnimationFrame(draw);
+  shoe.img.onload = requestAnimationFrame(draw);
 </script>
 </body>
 </html>
