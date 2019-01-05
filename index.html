@@ -28,30 +28,6 @@
   const ctx = cvs.getContext('2d');
   let requestAnimation;
 
-  const button = new Image();
-  const tutorial = new Image();
-
-  tutorial.src = 'img/tutorial.png';
-  button.src = 'img/button.png';
-
-  //Данные объектов
-  tutorialObj = {
-    x : cvs.width / 2 - 295,
-    y : 35,
-    w : 600,
-    h : 250,
-    textX : cvs.width / 2 - 120,
-    textY : 170,
-    line1 : 'Find all the'.toUpperCase(),
-    line2 : 'hidden objects!'.toUpperCase(),
-    size : 0,
-    state : false,
-    drawText : () => {
-      ctx.fillText(tutorialObj.line1, tutorialObj.textX, tutorialObj.textY - tutorialObj.size / 2);
-      ctx.fillText(tutorialObj.line2, tutorialObj.textX - 40, tutorialObj.textY + 40 + tutorialObj.size / 2);
-    },
-  };
-
   class Img {
     constructor(src, x, y, w, h) {
       this.img = new Image();
@@ -60,9 +36,21 @@
       this.y = y;
       this.w = w;
       this.h = h;
+      this.globalA = 0;
+    }
+
+    slowDraw() {
+      ctx.globalAlpha = this.globalA;
+      if(this.globalA < 1) this.globalA += 0.05;
+      if (this.w && this.h) {
+        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+      } else {
+        ctx.drawImage(this.img, this.x, this.y);
+      }
     }
 
     drawImg() {
+      ctx.globalAlpha = 1;
       if (this.w && this.h) {
         ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
       } else {
@@ -80,6 +68,8 @@
       this.angle = angle;
       this.globalA = 1;
       this.backlight = false;
+      this.animateState = false;
+      this.count = 0;
     }
 
      drawImg() {
@@ -95,9 +85,55 @@
      }
 
      drawText() {
-       ctx.font = `30px AlbertusMedium`;
+       ctx.font = '30px AlbertusMedium';
        ctx.fillText(this.text, this.textX, this.textY);
      }
+
+     animate() {
+       if(this.count == 0 && this.animateState === false) {
+         this.animateState = true;
+       } else if (this.count == 30 && this.animateState === true) {
+         this.animateState = false;
+       }
+
+       if (this.animateState) {
+         this.w += 0.5;
+         this.h += 0.5;
+         this.count++
+       } else {
+         this.w -= 0.5;
+         this.h -= 0.5;
+         this.count--;
+       }
+     }
+  }
+
+  class AnimateImg extends ImgOfObject {
+    constructor(src, x, y, w, h, text, textX, textY, angle = 0) {
+      super(src, x, y, w, h, text, textX, textY, angle = 0);
+      this.animateState = false;
+      this.size = 0;
+    }
+
+    animate() {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#460000';
+        ctx.font = `bold ${40 + this.size}px FrizQuadrataC`;
+        if (this.size.toFixed(2) == 0 && this.animateState === false) {
+          this.animateState = true;
+        } else if (this.size.toFixed(2) == 5 && this.animateState === true) {
+          this.animateState = false;
+        }
+        if (this.animateState === true) {
+          this.drawText();
+          this.size += 0.1;
+          this.textX -= this.size / 100;
+        } else {
+          this.drawText();
+          this.size -= 0.1;
+          this.textX += this.size / 100;
+        }
+      }
   }
 
   let bg = new Img('img/bg_ho.png', 0, 0);
@@ -106,16 +142,26 @@
 
   let gui = new Img('img/ho_gui.png', cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
   let logo = new Img('img/logo.png', cvs.width / 2 - 800 / 2, 200, 800, 400);
+    
+  const tutorial = new AnimateImg('img/tutorial.png', cvs.width / 2 - 295, 35, 600, 250, 'Find all the\nhidden objects',
+  cvs.width / 2 - 120, 170);
+
+  tutorial.drawText = function() {
+    ctx.fillText('Find all the'.toUpperCase(), this.textX, this.textY - this.size / 2);
+    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 40, this.textY + 40 + this.size / 2);
+  }
 
 
-  let buttonObj = new Img(cvs.width / 2 - 400 / 2, 600, 400, 100);
-  let logoObj = new Img();
+  let button = new AnimateImg('img/button.png', cvs.width / 2 - 400 / 2, 600, 400, 100, 'Play FREE', 900, 660);
 
 
   //first set
-  let playingCardObj = new ImgOfObject('img/playing_card.png', cvs.width - 390, cvs.height / 2 + 60, 70, 100, 'Playing card', 500, 1020, -45);
-  let purseObj = new ImgOfObject('img/purse.png', cvs.width / 4 + 50, cvs.height / 2 + 125, 100, 90, 'Purse', 830, 1020, 10);
-  let glassBirdObj = new ImgOfObject('img/glass_bird.png', cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 1020);
+  let playingCardObj = new ImgOfObject('img/playing_card.png', cvs.width - 390, cvs.height / 2 + 60, 70, 100,
+    'Playing card', 500, 1020, -45);
+  let purseObj = new ImgOfObject('img/purse.png', cvs.width / 4 + 50, cvs.height / 2 + 125, 100, 90, 'Purse', 830,
+    1020, 10);
+  let glassBirdObj = new ImgOfObject('img/glass_bird.png', cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100,
+    'Glass Bird', 1050, 1020);
   let appleObj = new ImgOfObject('img/apple.png', 1150, 554, 60, 60, 'Apple', 1350, 1020);
 
   //second set
@@ -174,45 +220,28 @@
 
   //Главная функция отрисовки
   function draw() {
-    ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     bg.drawImg();
     gui.drawImg();
 
     //Отрисовка объектов
     arrOfObjects.forEach((elem) => {
-      ctx.globalAlpha = elem.globalA;
+       ctx.globalAlpha = elem.globalA;
 
       //Проверка на время
       if (performance.now() - time >= 5 * 1000 && arrOfObjects[0].backlight === false) {
         arrOfObjects[0].backlight = true;
-        let count = 0;
-        let state = false;
 
         //Запуск анимации для первого объекта в списке
         let inter = setInterval(() => {
-          if(count == 0 && state === false) {
-            state = true;
-          } else if (count == 30 && state === true) {
-            state = false;
-          }
-
-          if (state) {
-            arrOfObjects[0].w += 0.5;
-            arrOfObjects[0].h += 0.5;
-            count++
-          } else {
-            arrOfObjects[0].w -= 0.5;
-            arrOfObjects[0].h -= 0.5;
-            count--;
-          }
+          arrOfObjects[0].animate();
 
           //Отключение анимации при клике на объект
           cvs.addEventListener('click', function(event) {
             let rect = cvs.getBoundingClientRect();
             let x = event.clientX - rect.left;
             let y = event.clientY - rect.top;
-            arrOfObjects.forEach((elem, i) => {
+            arrOfObjects.forEach((elem) => {
               if (elem.x <= x && x <= elem.x + elem.w && elem.y <= y && y <= elem.y + elem.h) {
                 clearInterval(inter);
               }
@@ -231,33 +260,15 @@
 
     //Отрисовка tutorial
     if (arrOfObjects.length !== 0) {
-      ctx.drawImage(tutorial, tutorialObj.x, tutorialObj.y, tutorialObj.w, tutorialObj.h);
-      (function drawTutorial() {
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = '#460000';
-        ctx.font = `bold ${40 + tutorialObj.size}px FrizQuadrataC`;
-
-        if (tutorialObj.size.toFixed(2) == 0 && tutorialObj.state === false) {
-          tutorialObj.state = true;
-        } else if (tutorialObj.size.toFixed(2) == 5 && tutorialObj.state === true) {
-          tutorialObj.state = false;
-        }
-        if (tutorialObj.state === true) {
-          tutorialObj.drawText();
-          tutorialObj.size += 0.05;
-          tutorialObj.textX -= tutorialObj.size / 15;
-        } else {
-          tutorialObj.drawText();
-          tutorialObj.size -= 0.05;
-          tutorialObj.textX += tutorialObj.size / 15;
-        }
-      })();
+      tutorial.drawImg();
+      tutorial.animate();
     }
     else {
-      bgBlur.drawImg();
+      bgBlur.slowDraw();
       logo.drawImg();
-      ctx.drawImage(button, buttonObj.x, buttonObj.y, buttonObj.w, buttonObj.h);
-      ctx.fillText(buttonObj.text, buttonObj.x + 120, buttonObj.y + 60);
+      button.drawImg();
+      button.drawText();
+      setInterval(button.animate(), 50);
     }
     requestAnimation = requestAnimationFrame(draw);
   }
