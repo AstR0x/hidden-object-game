@@ -130,7 +130,6 @@
           this.drawText();
           this.size += 0.1;
           this.textX -= 0.3;
-          console.log(this.size / this.textX);
         } else {
           this.drawText();
           this.size -= 0.1;
@@ -150,7 +149,7 @@
 
   tutorial.drawText = function() {
     ctx.fillText('Find all the'.toUpperCase(), this.textX, this.textY - this.size / 2);
-    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 38, this.textY + 40 + this.size / 2);
+    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 38, this.textY + cvs.height / 20 + this.size / 2);
   }
 
   let button = new AnimateImg('img/button.png', cvs.width / 2.66, cvs.height / 1.8, cvs.width / 4, cvs.height / 10,
@@ -191,7 +190,6 @@
 
    let arrOfArrays = [[playingCard, purse, glassBird, apple], [book, basket, fan, shoe],
      [mirror, balerina, parfume, comb]];
-
 
   let arrOfObjects = arrOfArrays[randomNum];
 
