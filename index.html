@@ -28,53 +28,11 @@
   const ctx = cvs.getContext('2d');
   let requestAnimation;
 
-  const bg = new Image();
-  const bgCover = new Image();
-  const bgBlur = new Image();
-  const gui = new Image();
-  const logo = new Image();
   const button = new Image();
   const tutorial = new Image();
 
-  const glassBird = new Image();
-  const playingCard = new Image();
-  const purse = new Image();
-  const apple = new Image();
-
-  const mirror = new Image();
-  const balerina = new Image();
-  const parfume = new Image();
-  const comb = new Image();
-
-  const book = new Image();
-  const basket = new Image();
-  const fan = new Image();
-  const shoe = new Image();
-
-  bg.src = 'img/bg_ho.png';
-  bgCover.src = 'img/bg_cover.png';
-  bgBlur.src = 'img/bg_blur.png';
-
   tutorial.src = 'img/tutorial.png';
-  gui.src = 'img/ho_gui.png';
-  logo.src = 'img/logo.png';
   button.src = 'img/button.png';
-
-  glassBird.src = 'img/glass_bird.png';
-  playingCard.src = 'img/playing_card.png';
-  purse.src = 'img/purse.png';
-  apple.src = 'img/apple.png';
-
-  mirror.src = 'img/mirror.png';
-  balerina.src = 'img/balerina.png';
-  parfume.src = 'img/parfume.png';
-  comb.src = 'img/comb.png';
-
-  book.src = 'img/book.png';
-  basket.src = 'img/basket.png';
-  fan.src = 'img/fan.png';
-  shoe.src = 'img/shoe.png';
-
 
   //Данные объектов
   tutorialObj = {
@@ -94,27 +52,28 @@
     },
   };
 
-  let buttonObj = {
-    x : cvs.width / 2 - 400 / 2,
-    y : 600,
-    w : 400,
-    h : 100,
-    text: 'Play Free'.toUpperCase(),
-  };
-
-  let logoObj = {
-    x : cvs.width / 2 - 800 / 2,
-    y : 200,
-    w : 800,
-    h : 400,
-  };
-
-  class imageOfObject {
-    constructor(x, y, w, h, text, textX, textY, angle = 0) {
+  class Img {
+    constructor(src, x, y, w, h) {
+      this.img = new Image();
+      this.img.src = src;
       this.x = x;
       this.y = y;
       this.w = w;
       this.h = h;
+    }
+
+    drawImg() {
+      if (this.w && this.h) {
+        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+      } else {
+        ctx.drawImage(this.img, this.x, this.y);
+      }
+    }
+  }
+
+  class ImgOfObject extends Img {
+    constructor(src, x, y, w, h, text, textX, textY, angle = 0) {
+     super(src, x, y, w, h, text);
       this.text = text;
       this.textX = textX;
       this.textY = textY;
@@ -122,31 +81,60 @@
       this.globalA = 1;
       this.backlight = false;
     }
+
+     drawImg() {
+       ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+     }
+
+     drawAngleImg() {
+       ctx.save();
+       ctx.translate(this.x + this.h / 2, this.y + this.w / 2);
+       ctx.rotate(inRad(this.angle));
+       ctx.drawImage(this.img, -this.w / 2, -this.h / 2, this.w, this.h);
+       ctx.restore();
+     }
+
+     drawText() {
+       ctx.font = `30px AlbertusMedium`;
+       ctx.fillText(this.text, this.textX, this.textY);
+     }
   }
 
+  let bg = new Img('img/bg_ho.png', 0, 0);
+  let bgCover = new Img('img/bg_cover.png', 0, 0);
+  let bgBlur = new Img('img/bg_blur.png', 0, 0);
+
+  let gui = new Img('img/ho_gui.png', cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+  let logo = new Img('img/logo.png', cvs.width / 2 - 800 / 2, 200, 800, 400);
+
+
+  let buttonObj = new Img(cvs.width / 2 - 400 / 2, 600, 400, 100);
+  let logoObj = new Img();
+
+
   //first set
-  let playingCardObj = new imageOfObject(cvs.width - 390, cvs.height / 2 + 60, 70, 100, 'Playing card', 500, 1020, -45);
-  let purseObj = new imageOfObject(cvs.width / 4 + 50, cvs.height / 2 + 125, 100, 90, 'Purse', 830, 1020, 10);
-  let glassBirdObj = new imageOfObject(cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 1020);
-  let appleObj = new imageOfObject(1150, 554, 60, 60, 'Apple', 1350, 1020);
+  let playingCardObj = new ImgOfObject('img/playing_card.png', cvs.width - 390, cvs.height / 2 + 60, 70, 100, 'Playing card', 500, 1020, -45);
+  let purseObj = new ImgOfObject('img/purse.png', cvs.width / 4 + 50, cvs.height / 2 + 125, 100, 90, 'Purse', 830, 1020, 10);
+  let glassBirdObj = new ImgOfObject('img/glass_bird.png', cvs.width / 4 + 20, cvs.height / 4 - 2, 100, 100, 'Glass Bird', 1050, 1020);
+  let appleObj = new ImgOfObject('img/apple.png', 1150, 554, 60, 60, 'Apple', 1350, 1020);
 
   //second set
-  let mirrorObj = new imageOfObject(360, 350, 100, 150, 'Mirror', 500, 1020);
-  let balerinaObj = new imageOfObject(1010, 425, 100, 200, 'Ballet Dancer', 750, 1020);
-  let parfumeObj = new imageOfObject(cvs.width / 4 + 60, cvs.height / 2 + 145, 70, 80, 'Parfume', 1090, 1020, 25);
-  let combObj = new imageOfObject(cvs.width - 260, cvs.height / 2 - 40, 50, 80, 'Comb', 1350, 1020, 25);
+  let mirrorObj = new ImgOfObject('img/mirror.png', 360, 350, 100, 150, 'Mirror', 500, 1020);
+  let balerinaObj = new ImgOfObject('img/balerina.png', 1010, 425, 100, 200, 'Ballet Dancer', 750, 1020);
+  let parfumeObj = new ImgOfObject('img/parfume.png', cvs.width / 4 + 60, cvs.height / 2 + 145, 70, 80, 'Parfume', 1090, 1020, 25);
+  let combObj = new ImgOfObject('img/comb.png', cvs.width - 260, cvs.height / 2 - 40, 50, 80, 'Comb', 1350, 1020, 25);
 
   //third set
-  let bookObj = new imageOfObject(1270, 600, 120, 120, 'Book', 500, 1020, -10);
-  let basketObj = new imageOfObject(940, 500, 130, 130, 'Basket', 770, 1020);
-  let fanObj = new imageOfObject(640, cvs.height / 2, 150, 75, 'Fan', 1090, 1020, -150);
-  let shoeObj = new imageOfObject(1050, 830, 100, 100, 'Shoe', 1350, 1020);
+  let bookObj = new ImgOfObject('img/book.png', 1270, 600, 120, 120, 'Book', 500, 1020, -10);
+  let basketObj = new ImgOfObject('img/basket.png', 940, 500, 130, 130, 'Basket', 770, 1020);
+  let fanObj = new ImgOfObject('img/fan.png', 640, cvs.height / 2, 150, 75, 'Fan', 1090, 1020, -150);
+  let shoeObj = new ImgOfObject('img/shoe.png', 1050, 830, 100, 100, 'Shoe', 1350, 1020);
 
   const randomNum = Math.round(Math.random() * 2);
 
-  let arrOfArrays = [[[playingCard, playingCardObj], [purse, purseObj], [glassBird, glassBirdObj], [apple, appleObj]],
-    [[mirror, mirrorObj], [balerina, balerinaObj], [parfume, parfumeObj], [comb, combObj]], [[book, bookObj],
-      [basket, basketObj], [fan, fanObj], [shoe, shoeObj]]];
+  let arrOfArrays = [[playingCardObj, purseObj, glassBirdObj, appleObj],
+     [mirrorObj, balerinaObj, parfumeObj, combObj], [bookObj,
+       basketObj, fanObj, shoeObj]];
 
   let arrOfObjects = arrOfArrays[randomNum];
 
@@ -164,13 +152,13 @@
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
     arrOfObjects.forEach((elem, i) => {
-      if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
+      if (elem.x <= x && x <= elem.x + elem.w && elem.y <= y && y <= elem.y + elem.h) {
         time = performance.now();
        let int = setInterval(function() {
-          if (elem[1].globalA > 0.1) {
-            elem[1].w++;
-            elem[1].h += 1 * elem[1].h / elem[1].h;
-            elem[1].globalA -= 0.1;
+          if (elem.globalA > 0.1) {
+            elem.w++;
+            elem.h += 1 * elem.h / elem.h;
+            elem.globalA -= 0.1;
           }
           else {
             delete arrOfObjects[i];
@@ -188,16 +176,16 @@
   function draw() {
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, cvs.width, cvs.height);
-    ctx.drawImage(bg, 0, 0);
-    ctx.drawImage(gui, cvs.width / 6 + 20, cvs.height - 200, 1250, 200);
+    bg.drawImg();
+    gui.drawImg();
 
     //Отрисовка объектов
     arrOfObjects.forEach((elem) => {
-      ctx.globalAlpha = elem[1].globalA;
+      ctx.globalAlpha = elem.globalA;
 
       //Проверка на время
-      if (performance.now() - time >= 5 * 1000 && arrOfObjects[0][1].backlight === false) {
-        arrOfObjects[0][1].backlight = true;
+      if (performance.now() - time >= 5 * 1000 && arrOfObjects[0].backlight === false) {
+        arrOfObjects[0].backlight = true;
         let count = 0;
         let state = false;
 
@@ -210,12 +198,12 @@
           }
 
           if (state) {
-            arrOfObjects[0][1].w += 0.5;
-            arrOfObjects[0][1].h += 0.5;
+            arrOfObjects[0].w += 0.5;
+            arrOfObjects[0].h += 0.5;
             count++
           } else {
-            arrOfObjects[0][1].w -= 0.5;
-            arrOfObjects[0][1].h -= 0.5;
+            arrOfObjects[0].w -= 0.5;
+            arrOfObjects[0].h -= 0.5;
             count--;
           }
 
@@ -225,25 +213,20 @@
             let x = event.clientX - rect.left;
             let y = event.clientY - rect.top;
             arrOfObjects.forEach((elem, i) => {
-              if (elem[1].x <= x && x <= elem[1].x + elem[1].w && elem[1].y <= y && y <= elem[1].y + elem[1].h) {
+              if (elem.x <= x && x <= elem.x + elem.w && elem.y <= y && y <= elem.y + elem.h) {
                 clearInterval(inter);
               }
             });
           });
         }, 50);
       }
-      if(elem[1].angle) {
-        ctx.save();
-        ctx.translate(elem[1].x + elem[1].h / 2, elem[1].y + elem[1].w / 2);
-        ctx.rotate(inRad(elem[1].angle));
-        ctx.drawImage(elem[0], -elem[1].w / 2, -elem[1].h / 2, elem[1].w, elem[1].h);
-        ctx.restore();
+      if(elem.angle) {
+        elem.drawAngleImg();
       } else {
-        ctx.drawImage(elem[0], elem[1].x, elem[1].y, elem[1].w, elem[1].h);
+        elem.drawImg();
       }
-      ctx.font = `30px AlbertusMedium`;
-      ctx.fillText(elem[1].text, elem[1].textX, elem[1].textY);
-      ctx.drawImage(bgCover, 0, 0);
+      elem.drawText();
+      bgCover.drawImg();
     });
 
     //Отрисовка tutorial
@@ -271,8 +254,8 @@
       })();
     }
     else {
-      ctx.drawImage(bgBlur, 0, 0);
-      ctx.drawImage(logo, logoObj.x, logoObj.y, logoObj.w, logoObj.h);
+      bgBlur.drawImg();
+      logo.drawImg();
       ctx.drawImage(button, buttonObj.x, buttonObj.y, buttonObj.w, buttonObj.h);
       ctx.fillText(buttonObj.text, buttonObj.x + 120, buttonObj.y + 60);
     }
