@@ -87,7 +87,7 @@
      }
 
      drawText() {
-       ctx.font = '30px AlbertusMedium';
+       ctx.font = `${cvs.width / 55}px AlbertusMedium`;
        ctx.fillText(this.text, this.textX, this.textY);
      }
 
@@ -148,8 +148,8 @@
     'Find all the\nhidden objects', cvs.width / 2.35, cvs.height / 5.7);
 
   tutorial.drawText = function() {
-    ctx.fillText('Find all the'.toUpperCase(), this.textX, this.textY - this.size / 2);
-    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - 38, this.textY + cvs.height / 20 + this.size / 2);
+    ctx.fillText('Find all the'.toUpperCase(), this.textX - cvs.width / 350, this.textY - this.size / 2);
+    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - cvs.width / 35 , this.textY + cvs.height / 20 + this.size / 2);
   }
 
   let button = new AnimateImg('img/button.png', cvs.width / 2.66, cvs.height / 1.8, cvs.width / 4, cvs.height / 10,
