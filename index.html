@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Playable Ads</title>
   <style>
-    @font-face{
+    @font-face {
       font-family: 'FrizQuadrataC';
       src: url('./fonts/FrizQuadrataC.otf');
     }
@@ -24,11 +24,10 @@
 <canvas id="game-window">
 </canvas>
 <script>
-   const cvs = document.getElementById('game-window');
-   const ctx = cvs.getContext('2d');
-   cvs.width = window.innerWidth;
-   cvs.height = window.innerHeight;
-   let requestAnimation;
+  const cvs = document.getElementById('game-window');
+  const ctx = cvs.getContext('2d');
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
 
   class Img {
     constructor(src, x, y, w, h) {
@@ -44,7 +43,7 @@
     slowDraw() {
       ctx.globalAlpha = this.globalA;
       if(this.globalA < 1) this.globalA += 0.05;
-      if (this.w && this.h) {
+      if(this.w && this.h) {
         ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
       } else {
         ctx.drawImage(this.img, this.x, this.y);
@@ -53,7 +52,7 @@
 
     drawImg() {
       ctx.globalAlpha = 1;
-      if (this.w && this.h) {
+      if(this.w && this.h) {
         ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
       } else {
         ctx.drawImage(this.img, this.x, this.y);
@@ -63,7 +62,7 @@
 
   class ImgOfObject extends Img {
     constructor(src, x, y, w, h, text, textX, textY, angle = 0) {
-     super(src, x, y, w, h, text);
+      super(src, x, y, w, h, text);
       this.text = text;
       this.textX = textX;
       this.textY = textY;
@@ -74,40 +73,47 @@
       this.count = 0;
     }
 
-     drawImg() {
-       ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
-     }
+    drawImg() {
+      ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+    }
 
-     drawAngleImg() {
-       ctx.save();
-       ctx.translate(this.x + this.h / 2, this.y + this.w / 2);
-       ctx.rotate(inRad(this.angle));
-       ctx.drawImage(this.img, -this.w / 2, -this.h / 2, this.w, this.h);
-       ctx.restore();
-     }
+    drawAngleImg() {
+      ctx.save();
+      ctx.translate(this.x + this.h / 2, this.y + this.w / 2);
+      ctx.rotate(inRad(this.angle));
+      ctx.drawImage(this.img, -this.w / 2, -this.h / 2, this.w, this.h);
+      ctx.restore();
+    }
 
-     drawText() {
-       ctx.font = `${cvs.width / 55}px AlbertusMedium`;
-       ctx.fillText(this.text, this.textX, this.textY);
-     }
+    drawText() {
+      ctx.font = `${cvs.width / 55}px AlbertusMedium`;
+      ctx.fillText(this.text, this.textX, this.textY);
+    }
 
-     animate() {
-       if(this.count == 0 && this.animateState === false) {
-         this.animateState = true;
-       } else if (this.count == 30 && this.animateState === true) {
-         this.animateState = false;
-       }
+    checkCoord() {
+      let rect = cvs.getBoundingClientRect();    // получение
+      let x = event.clientX - rect.left;        // координат
+      let y = event.clientY - rect.top;
+      return this.x <= x && x <= this.x + this.w && this.y <= y && y <= this.y + this.h;
+    }
 
-       if (this.animateState) {
-         this.w += 0.4;
-         this.h += 0.4;
-         this.count++
-       } else {
-         this.w -= 0.4;
-         this.h -= 0.4;
-         this.count--;
-       }
-     }
+    animate() {
+      if(this.count == 0 && this.animateState === false) {
+        this.animateState = true;
+      } else if(this.count == 30 && this.animateState === true) {
+        this.animateState = false;
+      }
+
+      if(this.animateState) {
+        this.w += 0.4;
+        this.h += 0.4;
+        this.count++
+      } else {
+        this.w -= 0.4;
+        this.h -= 0.4;
+        this.count--;
+      }
+    }
   }
 
   class AnimateImg extends ImgOfObject {
@@ -118,24 +124,24 @@
     }
 
     animate() {
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = '#460000';
-        ctx.font = `bold ${cvs.width / 40 + this.size}px FrizQuadrataC`;
-        if (this.size.toFixed(2) == 0 && this.animateState === false) {
-          this.animateState = true;
-        } else if (this.size.toFixed(2) == 5 && this.animateState === true) {
-          this.animateState = false;
-        }
-        if (this.animateState === true) {
-          this.drawText();
-          this.size += 0.1;
-          this.textX -= 0.3;
-        } else {
-          this.drawText();
-          this.size -= 0.1;
-          this.textX += 0.3;
-        }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#460000';
+      ctx.font = `bold ${cvs.width / 40 + this.size}px FrizQuadrataC`;
+      if(this.size.toFixed(2) == 0 && this.animateState === false) {
+        this.animateState = true;
+      } else if(this.size.toFixed(2) == 5 && this.animateState === true) {
+        this.animateState = false;
       }
+      if(this.animateState === true) {
+        this.drawText();
+        this.size += 0.1;
+        this.textX -= 0.3;
+      } else {
+        this.drawText();
+        this.size -= 0.1;
+        this.textX += 0.3;
+      }
+    }
   }
 
   let bg = new Img('img/bg_ho.png', 0, 0, cvs.width, cvs.height);
@@ -149,35 +155,35 @@
 
   tutorial.drawText = function() {
     ctx.fillText('Find all the'.toUpperCase(), this.textX - cvs.width / 350, this.textY - this.size / 2);
-    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - cvs.width / 35 , this.textY + cvs.height / 20 + this.size / 2);
+    ctx.fillText('hidden objects!'.toUpperCase(), this.textX - cvs.width / 35, this.textY + cvs.height / 20 + this.size / 2);
   }
 
   let button = new AnimateImg('img/button.png', cvs.width / 2.66, cvs.height / 1.8, cvs.width / 4, cvs.height / 10,
-    'Play FREE', cvs.width / 2.20, cvs.height / 1.62);
+    'Play FREE', cvs.width / 2.15, cvs.height / 1.62);
 
   //first set
   let playingCard = new ImgOfObject('img/playing_card.png', cvs.width / 1.25, cvs.height / 1.8,
     cvs.width / 25, cvs.height / 10, 'Playing card', cvs.width / 4, cvs.height / 1.055, -45);
   let purse = new ImgOfObject('img/purse.png', cvs.width / 3.8, cvs.height / 1.67,
     cvs.width / 15, cvs.height / 10, 'Purse', cvs.width / 2.4, cvs.height / 1.055, 10);
-  let glassBird = new ImgOfObject('img/glass_bird.png', cvs.width / 4 , cvs.height / 4, cvs.width / 16, cvs.height / 12,
+  let glassBird = new ImgOfObject('img/glass_bird.png', cvs.width / 4, cvs.height / 4, cvs.width / 16, cvs.height / 12,
     'Glass Bird', cvs.width / 1.9, cvs.height / 1.055);
-   let apple = new ImgOfObject('img/apple.png', cvs.width / 1.68, cvs.height / 1.96, cvs.width / 30, cvs.height / 17,
-     'Apple', cvs.width / 1.45, cvs.height / 1.055);
+  let apple = new ImgOfObject('img/apple.png', cvs.width / 1.68, cvs.height / 1.96, cvs.width / 30, cvs.height / 17,
+    'Apple', cvs.width / 1.45, cvs.height / 1.055);
 
   //second set
   let mirror = new ImgOfObject('img/mirror.png', cvs.width / 5.5, cvs.height / 3, cvs.width / 16, cvs.height / 7,
-    'Mirror',  cvs.width / 4, cvs.height / 1.055);
+    'Mirror', cvs.width / 4, cvs.height / 1.055);
   let balerina = new ImgOfObject('img/balerina.png', cvs.width / 2, cvs.height / 2.65, cvs.width / 13, cvs.height / 5,
-    'Ballet Dancer',  cvs.width / 2.7, cvs.height / 1.055);
+    'Ballet Dancer', cvs.width / 2.7, cvs.height / 1.055);
   let parfume = new ImgOfObject('img/parfume.png', cvs.width / 3.7, cvs.height / 1.6, cvs.width / 20, cvs.height / 13,
-    'Parfume', cvs.width/ 1.8,
+    'Parfume', cvs.width / 1.8,
     cvs.height / 1.055, 25);
   let comb = new ImgOfObject('img/comb.png', cvs.width / 1.15, cvs.height / 2.15, cvs.width / 30, cvs.height / 20,
     'Comb', cvs.width / 1.45, cvs.height / 1.055, 25);
 
   //third set
-  let book = new ImgOfObject('img/book.png', cvs.width / 1.5, cvs.height / 1.75, cvs.width / 15, cvs.height / 15,
+  let book = new ImgOfObject('img/book.png', cvs.width / 1.5, cvs.height / 1.78, cvs.width / 15, cvs.height / 15,
     'Book', cvs.width / 4, cvs.height / 1.055, -10);
   let basket = new ImgOfObject('img/basket.png', cvs.width / 2.05, cvs.height / 2.15, cvs.width / 14, cvs.height / 9,
     'Basket', cvs.width / 2.45, cvs.height / 1.055);
@@ -188,8 +194,8 @@
 
   const randomNum = Math.round(Math.random() * 2);
 
-   let arrOfArrays = [[playingCard, purse, glassBird, apple], [book, basket, fan, shoe],
-     [mirror, balerina, parfume, comb]];
+  let arrOfArrays = [[playingCard, purse, glassBird, apple], [book, basket, fan, shoe],
+    [mirror, balerina, parfume, comb]];
 
   let arrOfObjects = arrOfArrays[randomNum];
 
@@ -201,20 +207,30 @@
   //Начальное время
   let time = performance.now();
 
+
+  bg.img.onload = function() {
+    game();
+  }
+
+  function game() {
+    render();
+    requestAnimationFrame(game);
+  }
+
   //Обработка объектов
-  cvs.addEventListener('click', function(event) {
-    let rect = cvs.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
+  cvs.addEventListener('click', function() {
     arrOfObjects.forEach((elem, i) => {
-      if (elem.x <= x && x <= elem.x + elem.w && elem.y <= y && y <= elem.y + elem.h) {
+      //Проверка области клика
+      if(elem.checkCoord()) {
         time = performance.now();
-       let int = setInterval(function() {
-          if (elem.globalA > 0.1) {
+        //Медлненное исчезновение объекта
+        let int = setInterval(function() {
+          if(elem.globalA > 0.1) {
             elem.w++;
             elem.h += 1 * elem.h / elem.h;
             elem.globalA -= 0.1;
           }
+          //Удаление объекта из массива
           else {
             delete arrOfObjects[i];
             arrOfObjects = arrOfObjects.filter((elem) => {
@@ -227,18 +243,32 @@
     });
   }, false);
 
+
   //Главная функция отрисовки
-  function draw() {
+  function render() {
     ctx.clearRect(0, 0, cvs.width, cvs.height);
-    bg.drawImg();
-    gui.drawImg();
+
+    //Отрисовка заднего фона, gui и tutorial
+    if(arrOfObjects.length !== 0) {
+      bg.drawImg();
+      gui.drawImg();
+      tutorial.drawImg();
+      tutorial.animate();
+    }
+    else {
+      bg.drawImg();
+      bgBlur.slowDraw();
+      logo.slowDraw();
+      button.slowDraw();
+      button.animate();
+    }
 
     //Отрисовка объектов
     arrOfObjects.forEach((elem) => {
-       ctx.globalAlpha = elem.globalA;
+      ctx.globalAlpha = elem.globalA;
 
       //Проверка на время
-      if (performance.now() - time >= 5 * 1000 && arrOfObjects[0].backlight === false) {
+      if(performance.now() - time >= 5 * 1000 && arrOfObjects[0].backlight === false) {
         arrOfObjects[0].backlight = true;
 
         //Запуск анимации для первого объекта в списке
@@ -246,19 +276,16 @@
           arrOfObjects[0].animate();
 
           //Отключение анимации при клике на объект
-          cvs.addEventListener('click', function(event) {
-            let rect = cvs.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
+          cvs.addEventListener('click', function() {
             arrOfObjects.forEach((elem) => {
-              if (elem.x <= x && x <= elem.x + elem.w && elem.y <= y && y <= elem.y + elem.h) {
+              if(elem.checkCoord()) {
                 clearInterval(inter);
               }
             });
           });
         }, 50);
       }
-      if(elem.angle) {
+      if(elem.angle) {    //Если у объекта есть наклон, то отрисовываем с наклоном
         elem.drawAngleImg();
       } else {
         elem.drawImg();
@@ -266,22 +293,8 @@
       elem.drawText();
       bgCover.drawImg();
     });
-
-    //Отрисовка tutorial
-    if (arrOfObjects.length !== 0) {
-      tutorial.drawImg();
-      tutorial.animate();
-    }
-    else {
-      bgBlur.slowDraw();
-      logo.slowDraw();
-      button.slowDraw();
-      button.drawText();
-      setInterval(button.animate(), 50);
-    }
-    requestAnimation = requestAnimationFrame(draw);
   }
-  shoe.img.onload = requestAnimationFrame(draw);
+
 </script>
 </body>
 </html>
