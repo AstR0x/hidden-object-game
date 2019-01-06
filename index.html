@@ -94,7 +94,10 @@
       let rect = cvs.getBoundingClientRect();    // получение
       let x = event.clientX - rect.left;        // координат
       let y = event.clientY - rect.top;
-      return this.x <= x && x <= this.x + this.w && this.y <= y && y <= this.y + this.h;
+      if(!this.angle) {
+        return this.x <= x && x <= this.x + this.w && this.y <= y && y <= this.y + this.h;
+      }
+      return this.x - this.angle / 3.8  <= x && x <= this.x + this.w + this.angle / 3.8 && this.y  + this.angle / 5 <= y && y <= this.y  + this.h - this.angle / 5;
     }
 
     animate() {
