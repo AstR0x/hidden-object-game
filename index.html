@@ -90,7 +90,7 @@
       ctx.fillText(this.text, this.textX, this.textY);
     }
 
-    checkCoord() {
+    checkCoord(event) {
       let rect = cvs.getBoundingClientRect();    // получение
       let x = event.clientX - rect.left;        // координат
       let y = event.clientY - rect.top;
@@ -214,14 +214,14 @@
 
   function game() {
     render();
-    requestAnimationFrame(game);
+    requestAnimFrame(game);
   }
 
   //Обработка объектов
-  cvs.addEventListener('click', function() {
+  cvs.addEventListener('click', function(event) {
     arrOfObjects.forEach((elem, i) => {
       //Проверка области клика
-      if(elem.checkCoord()) {
+      if(elem.checkCoord(event)) {
         time = performance.now();
         //Медлненное исчезновение объекта
         let int = setInterval(function() {
@@ -276,9 +276,9 @@
           arrOfObjects[0].animate();
 
           //Отключение анимации при клике на объект
-          cvs.addEventListener('click', function() {
+          cvs.addEventListener('click', function(event) {
             arrOfObjects.forEach((elem) => {
-              if(elem.checkCoord()) {
+              if(elem.checkCoord(event)) {
                 clearInterval(inter);
               }
             });
@@ -295,6 +295,16 @@
     });
   }
 
+  let requestAnimFrame = (function() {
+    return window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function(callback) {
+        window.setTimeout(callback, 1000 / 20);
+      }
+  })();
 </script>
 </body>
 </html>
