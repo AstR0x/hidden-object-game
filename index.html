@@ -233,9 +233,12 @@
           //Удаление объекта из массива
           else {
             delete arrOfObjects[i];
-            arrOfObjects = arrOfObjects.filter((elem) => {
-              return elem;
-            });
+            setTimeout(function() {
+              arrOfObjects = arrOfObjects.filter((elem) => {
+                return elem;
+              });
+            }, 50);
+
             clearInterval(int);
           }
         }, 50);
