@@ -4,9 +4,14 @@
   generated randomly.
 
 ## Launching
+
+#### First method
+* To click on the [link](https://astr0x.github.io/playable-ads/)
+
+#### Second method
 1. Download and unzip the repository.
 2. Open playable-ads-master folder.
-3. Launch index.html
+3. Launch index.html.
 
 ## Screenshot
 ![screenshot](https://github.com/AstR0x/playable-ads/blob/master/img/screenshots/screenshot.png)
