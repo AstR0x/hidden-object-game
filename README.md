@@ -14,7 +14,7 @@
 3. Launch index.html.
 
 ## Screenshot
-![screenshot](https://github.com/AstR0x/playable-ads/blob/master/img/screenshots/screenshot.png)
+![screenshot](https://github.com/AstR0x/astr0x.github.io/blob/master/screenshots/playable-ads.png)
 
 
 
